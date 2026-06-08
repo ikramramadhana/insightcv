@@ -1,4 +1,4 @@
-# InsightCV 🧠
+# InsightCV 
 
 **AI-powered Resume Analyzer** — Upload CV kamu dan dapatkan analisis mendalam: ATS Score, skill gap, posisi yang cocok, dan saran perbaikan spesifik dalam hitungan detik.
 
