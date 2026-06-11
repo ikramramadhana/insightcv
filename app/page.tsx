@@ -70,7 +70,7 @@ export default function Home() {
   const resultRef = useRef<HTMLDivElement>(null)
 
   function handleFile(f: File) {
-    if (!f.name.match(/\.(pdf|txt|md)$/i)) { setError('Hanya file PDF, TXT, atau MD yang didukung.'); return }
+    if (!f.name.match(/\.(pdf|txt|md)$/i)) { setError('Only PDF, TXT, or MD files are supported.'); return }
     setFile(f); setError(''); setResult(null)
   }
 
@@ -82,11 +82,11 @@ export default function Home() {
     try {
       const r = await fetch('/api/analyze', { method: 'POST', body: fd })
       const data = await r.json()
-      if (!r.ok) throw new Error(data.error || 'Terjadi error')
+      if (!r.ok) throw new Error(data.error || 'An error occurred')
       setResult(data.result)
       setTimeout(() => resultRef.current?.scrollIntoView({ behavior: 'smooth' }), 100)
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Terjadi error')
+      setError(e instanceof Error ? e.message : 'An error occurred')
     }
     setLoading(false)
   }
@@ -117,7 +117,6 @@ export default function Home() {
       addLine(title, 12, true, [180, 130, 255])
     }
 
-    // Header
     doc.setFillColor(15, 10, 30)
     doc.rect(0, 0, 210, 297, 'F')
     addLine('InsightCV — AI Resume Analysis Report', 18, true, [180, 130, 255])
@@ -157,8 +156,8 @@ export default function Home() {
   const tabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'skills', label: 'Skill Gap' },
-    { id: 'positions', label: 'Posisi Cocok' },
-    { id: 'improvements', label: 'Saran' },
+    { id: 'positions', label: 'Best Fit Roles' },
+    { id: 'improvements', label: 'Suggestions' },
   ] as const
 
   return (
@@ -195,13 +194,13 @@ export default function Home() {
               Powered by LLaMA 3.3 70B via Groq
             </div>
             <h1 className="text-4xl font-bold mb-4 leading-tight">
-              Analisis CV kamu dengan
+              Analyze your resume with
               <span className="block" style={{ background: 'linear-gradient(135deg, #7c3aed, #059669)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                Kecerdasan Buatan
+                Artificial Intelligence
               </span>
             </h1>
             <p className="text-base max-w-lg mx-auto" style={{ color: 'rgba(255,255,255,0.4)' }}>
-              Dapatkan ATS Score, skill gap analysis, posisi yang cocok, dan saran perbaikan spesifik dalam hitungan detik.
+              Get your ATS Score, skill gap analysis, best fit roles, and specific improvement suggestions in seconds.
             </p>
           </div>
         )}
@@ -226,7 +225,7 @@ export default function Home() {
                     <svg width="24" height="24" fill="none" stroke="#34d399" strokeWidth="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                   </div>
                   <p className="font-semibold text-sm" style={{ color: '#34d399' }}>{file.name}</p>
-                  <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>{(file.size / 1024).toFixed(1)} KB · Klik untuk ganti</p>
+                  <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>{(file.size / 1024).toFixed(1)} KB · Click to change</p>
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-3">
@@ -234,8 +233,8 @@ export default function Home() {
                     <svg width="24" height="24" fill="none" stroke="#a78bfa" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                   </div>
                   <div>
-                    <p className="font-semibold text-sm mb-1">Drop CV kamu di sini</p>
-                    <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>atau klik untuk memilih file · PDF, TXT, MD</p>
+                    <p className="font-semibold text-sm mb-1">Drop your CV here</p>
+                    <p className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>or click to browse · PDF, TXT, MD</p>
                   </div>
                 </div>
               )}
@@ -258,9 +257,9 @@ export default function Home() {
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <svg className="animate-spin" width="16" height="16" fill="none" stroke="white" strokeWidth="2" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-                Menganalisis CV kamu...
+                Analyzing your resume...
               </span>
-            ) : '✨ Analisis Sekarang'}
+            ) : '✨ Analyze Now'}
           </button>
         )}
 
@@ -285,7 +284,7 @@ export default function Home() {
                     <button onClick={() => { setResult(null); setFile(null) }}
                       className="text-xs px-4 py-2 rounded-xl transition-colors"
                       style={{ background: 'rgba(255,255,255,0.06)', border: '0.5px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)' }}>
-                      ← Analisis Baru
+                      ← New Analysis
                     </button>
                     <button onClick={downloadPDF}
                       className="text-xs px-4 py-2 rounded-xl font-medium transition-all hover:scale-105"
@@ -320,9 +319,8 @@ export default function Home() {
             {/* ── Overview tab ── */}
             {activeTab === 'overview' && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Strengths */}
                 <div className="rounded-2xl p-5" style={{ background: 'rgba(34,197,94,0.06)', border: '0.5px solid rgba(34,197,94,0.18)' }}>
-                  <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#4ade80' }}>Kelebihan</p>
+                  <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#4ade80' }}>Strengths</p>
                   <div className="space-y-2.5">
                     {result.strengths.map((s, i) => (
                       <div key={i} className="flex items-start gap-2.5">
@@ -335,9 +333,8 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Weaknesses */}
                 <div className="rounded-2xl p-5" style={{ background: 'rgba(239,68,68,0.06)', border: '0.5px solid rgba(239,68,68,0.18)' }}>
-                  <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#f87171' }}>Kekurangan</p>
+                  <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#f87171' }}>Weaknesses</p>
                   <div className="space-y-2.5">
                     {result.weaknesses.map((w, i) => (
                       <div key={i} className="flex items-start gap-2.5">
@@ -350,9 +347,8 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Keywords found */}
                 <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '0.5px solid rgba(255,255,255,0.07)' }}>
-                  <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.4)' }}>Keywords Ditemukan ✓</p>
+                  <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.4)' }}>Keywords Found ✓</p>
                   <div className="flex flex-wrap gap-1.5">
                     {result.keywords_found.map((k, i) => (
                       <span key={i} className="text-xs px-2.5 py-1 rounded-lg" style={{ background: 'rgba(34,197,94,0.1)', color: '#4ade80', border: '0.5px solid rgba(34,197,94,0.2)' }}>{k}</span>
@@ -360,9 +356,8 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Keywords missing */}
                 <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '0.5px solid rgba(255,255,255,0.07)' }}>
-                  <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.4)' }}>Keywords Kurang ✗</p>
+                  <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.4)' }}>Keywords Missing ✗</p>
                   <div className="flex flex-wrap gap-1.5">
                     {result.keywords_missing.map((k, i) => (
                       <span key={i} className="text-xs px-2.5 py-1 rounded-lg" style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '0.5px solid rgba(239,68,68,0.2)' }}>{k}</span>
@@ -370,9 +365,8 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Recruiter summary */}
                 <div className="sm:col-span-2 rounded-2xl p-5" style={{ background: 'rgba(124,58,237,0.06)', border: '0.5px solid rgba(124,58,237,0.18)' }}>
-                  <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#a78bfa' }}>Ringkasan untuk Rekruiter</p>
+                  <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: '#a78bfa' }}>Recruiter Summary</p>
                   <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>{result.summary_for_recruiter}</p>
                 </div>
               </div>
@@ -382,7 +376,7 @@ export default function Home() {
             {activeTab === 'skills' && (
               <div className="space-y-4">
                 <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '0.5px solid rgba(255,255,255,0.07)' }}>
-                  <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#f87171' }}>Technical Skills yang Kurang</p>
+                  <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#f87171' }}>Missing Technical Skills</p>
                   <div className="flex flex-wrap gap-2">
                     {result.skill_gap.technical_missing.map((s, i) => (
                       <span key={i} className="text-xs px-3 py-1.5 rounded-xl font-medium" style={{ background: 'rgba(239,68,68,0.08)', color: '#fca5a5', border: '0.5px solid rgba(239,68,68,0.2)' }}>{s}</span>
@@ -390,7 +384,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '0.5px solid rgba(255,255,255,0.07)' }}>
-                  <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#fbbf24' }}>Soft Skills yang Kurang</p>
+                  <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#fbbf24' }}>Missing Soft Skills</p>
                   <div className="flex flex-wrap gap-2">
                     {result.skill_gap.soft_skills_missing.map((s, i) => (
                       <span key={i} className="text-xs px-3 py-1.5 rounded-xl font-medium" style={{ background: 'rgba(245,158,11,0.08)', color: '#fde68a', border: '0.5px solid rgba(245,158,11,0.2)' }}>{s}</span>
@@ -398,7 +392,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '0.5px solid rgba(255,255,255,0.07)' }}>
-                  <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#a78bfa' }}>Sertifikasi yang Direkomendasikan</p>
+                  <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: '#a78bfa' }}>Recommended Certifications</p>
                   <div className="space-y-2">
                     {result.skill_gap.certifications_recommended.map((c, i) => (
                       <div key={i} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'rgba(124,58,237,0.08)', border: '0.5px solid rgba(124,58,237,0.18)' }}>
